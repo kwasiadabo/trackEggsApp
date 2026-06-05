@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:5000/api-docs.json)",
+      "Bash(ls \"/Users/mac/Documents/Tenderbite/egg-distribution 2/backend/src/\")",
+      "Read(//Users/mac/Documents/Tenderbite/egg-distribution 2/backend/src/**)",
+      "Read(//Users/mac/Documents/Tenderbite/egg-distribution 2/database/**)",
+      "Read(//Users/mac/Documents/Tenderbite/egg-distribution 2/**)",
+      "Bash(git commit -m ' *)",
+      "Bash(ps -p 53034 -o command=)"
+    ],
+    "additionalDirectories": [
+      "/Users/mac/Documents/Tenderbite/egg-distribution 2/backend/src/services",
+      "/Users/mac/Documents/Tenderbite/egg-distribution 2/backend/src/controllers",
+      "/Users/mac/Documents/Tenderbite/egg-distribution 2/backend/src/routes",
+      "/Users/mac/Documents/Tenderbite/egg-distribution 2/database"
+    ]
+  }
+}
