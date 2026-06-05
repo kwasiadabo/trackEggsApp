@@ -14,6 +14,8 @@ export default function Login() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		console.log('Email is ' + form.email);
+		console.log('pswd ' + form.password);
 		setError('');
 		setLoading(true);
 		try {
