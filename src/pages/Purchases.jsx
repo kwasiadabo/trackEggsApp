@@ -204,10 +204,33 @@ export default function Purchases() {
 			<PrintHeader title="Purchase History" />
 			<div className="section-header">
 				<span className="section-title">📋 Purchase History</span>
-				<div
-					className="no-print"
-					style={{ display: 'flex', gap: 10, alignItems: 'center' }}
-				>
+				<div className="filter-bar no-print">
+					<input
+						type="text"
+						placeholder="🔍 Search purchases…"
+						value={search}
+						onChange={handleSearchChange}
+					/>
+					<input
+						type="date"
+						value={fromDate}
+						onChange={handleFromDateChange}
+						title="From date"
+					/>
+					<input
+						type="date"
+						value={toDate}
+						onChange={handleToDateChange}
+						title="To date"
+					/>
+					<button
+						type="button"
+						onClick={resetFilters}
+						className="btn btn-secondary"
+						style={{ whiteSpace: 'nowrap' }}
+					>
+						↺ Reset
+					</button>
 					<button
 						className="btn btn-secondary"
 						onClick={() => window.print()}
@@ -215,53 +238,8 @@ export default function Purchases() {
 					>
 						🖨 Print
 					</button>
-					<input
-						type="text"
-						placeholder="Search purchases..."
-						value={search}
-						onChange={handleSearchChange}
-						style={{
-							padding: '6px 10px',
-							borderRadius: 6,
-							border: '1px solid #ccc',
-							minWidth: 200,
-						}}
-					/>
-
-					{/* From Date */}
-					<input
-						type="date"
-						value={fromDate}
-						onChange={handleFromDateChange}
-						style={{
-							padding: '6px 10px',
-							borderRadius: 6,
-							border: '1px solid #ccc',
-						}}
-					/>
-
-					{/* To Date */}
-					<input
-						type="date"
-						value={toDate}
-						onChange={handleToDateChange}
-						style={{
-							padding: '6px 10px',
-							borderRadius: 6,
-							border: '1px solid #ccc',
-						}}
-					/>
-					{/* Reset Button */}
-					<button
-						type="button"
-						onClick={resetFilters}
-						className="btn btn-secondary"
-					>
-						Reset
-					</button>
-
 					{isManager && (
-						<button className="btn btn-primary" onClick={openBatch}>
+						<button className="btn btn-primary" onClick={openBatch} style={{ whiteSpace: 'nowrap' }}>
 							+ New Purchase
 						</button>
 					)}
@@ -424,6 +402,8 @@ export default function Purchases() {
 						</div>
 
 						{/* Line items */}
+						<div className="line-items-wrap">
+						<div className="line-items-inner">
 						<div
 							style={{
 								display: 'grid',
@@ -545,6 +525,8 @@ export default function Purchases() {
 								</div>
 							);
 						})}
+						</div>{/* .line-items-inner */}
+						</div>{/* .line-items-wrap */}
 
 						<button
 							type="button"
