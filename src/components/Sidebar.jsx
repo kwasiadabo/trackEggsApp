@@ -29,7 +29,6 @@ export default function Sidebar({ open, onClose }) {
 	};
 
 	const handleNavClick = () => {
-		// Close drawer on mobile after navigation
 		onClose?.();
 	};
 
@@ -138,6 +137,15 @@ export default function Sidebar({ open, onClose }) {
 								</div>
 							</div>
 						</div>
+						<NavLink
+							to="/change-password"
+							className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+							onClick={handleNavClick}
+							style={{ marginBottom: 6, fontSize: '0.82rem' }}
+						>
+							<span className="nav-icon">🔑</span>
+							Change Password
+						</NavLink>
 						<button className="sidebar-logout-btn" onClick={handleLogout}>
 							<span>↩</span> Sign out
 						</button>

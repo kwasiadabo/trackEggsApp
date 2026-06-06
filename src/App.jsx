@@ -5,33 +5,35 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
 import { ToastContainer } from './components/ui';
 
-import Login      from './pages/Login';
-import Dashboard  from './pages/Dashboard';
-import Purchases  from './pages/Purchases';
-import Inventory  from './pages/Inventory';
-import Sales      from './pages/Sales';
-import Customers  from './pages/Customers';
-import Payments   from './pages/Payments';
-import Debtors    from './pages/Debtors';
-import Expenses   from './pages/Expenses';
+import Login          from './pages/Login';
+import Dashboard      from './pages/Dashboard';
+import Purchases      from './pages/Purchases';
+import Inventory      from './pages/Inventory';
+import Sales          from './pages/Sales';
+import Customers      from './pages/Customers';
+import Payments       from './pages/Payments';
+import Debtors        from './pages/Debtors';
+import Expenses       from './pages/Expenses';
 import Users             from './pages/Users';
 import CustomerStatement from './pages/CustomerStatement';
 import MailRecipients    from './pages/MailRecipients';
-import FarmSetup        from './pages/FarmSetup';
+import FarmSetup         from './pages/FarmSetup';
+import ChangePassword    from './pages/ChangePassword';
 
 const PAGE_TITLES = {
-  '/':          'Dashboard',
-  '/purchases': 'Egg Purchases',
-  '/inventory': 'Inventory',
-  '/sales':     'Sales & Distribution',
-  '/customers': 'Customers',
-  '/payments':  'Payments',
-  '/debtors':   'Debtors',
-  '/expenses':  'Expenses',
-  '/users':     'User Management',
+  '/':                 'Dashboard',
+  '/purchases':        'Egg Purchases',
+  '/inventory':        'Inventory',
+  '/sales':            'Sales & Distribution',
+  '/customers':        'Customers',
+  '/payments':         'Payments',
+  '/debtors':          'Debtors',
+  '/expenses':         'Expenses',
+  '/users':            'User Management',
   '/statement':        'Customer Statement',
   '/mail-recipients':  'Mail Recipients',
   '/farm-setup':       'Farm Setup',
+  '/change-password':  'Change Password',
 };
 
 function Topbar({ onMenuOpen }) {
@@ -117,6 +119,9 @@ export default function App() {
           } />
           <Route path="/farm-setup" element={
             <ProtectedRoute><AppShell><FarmSetup /></AppShell></ProtectedRoute>
+          } />
+          <Route path="/change-password" element={
+            <ProtectedRoute><AppShell><ChangePassword /></AppShell></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>

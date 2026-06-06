@@ -33,12 +33,17 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    const res = await authApi.me();
+    setUser(res.data.data);
+  }, []);
+
   // Role helpers
   const isAdmin   = user?.role === 'admin';
   const isManager = user?.role === 'admin' || user?.role === 'manager';
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, isAdmin, isManager }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser, isAdmin, isManager }}>
       {children}
     </AuthContext.Provider>
   );
