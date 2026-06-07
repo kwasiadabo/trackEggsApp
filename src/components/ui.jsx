@@ -67,7 +67,7 @@ export function fmtDate(d) {
 
 // Egg size badge
 export function EggBadge({ size }) {
-  const map = { small: 'badge-brown', medium: 'badge-amber', large: 'badge-green' };
+  const map = { small: 'badge-brown', medium: 'badge-amber', large: 'badge-green', xlarge: 'badge-red', pullet: 'badge-brown' };
   return <span className={`badge ${map[size] || 'badge-brown'}`}>{size}</span>;
 }
 

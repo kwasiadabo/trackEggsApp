@@ -15,7 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import Modal from '../components/Modal';
 import ConfirmDelete from '../components/ConfirmDelete';
 
-const EGG_SIZES = ['small', 'medium', 'large'];
+const EGG_SIZES = ['small', 'medium', 'large', 'xlarge', 'pullet'];
 const EMPTY_FORM = {
 	farmName: '',
 	eggSize: 'large',

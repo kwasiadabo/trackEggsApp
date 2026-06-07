@@ -16,7 +16,7 @@ import Modal from '../components/Modal';
 import ConfirmDelete from '../components/ConfirmDelete';
 import InvoiceView from '../components/InvoiceView';
 
-const EGG_SIZES = ['small', 'medium', 'large'];
+const EGG_SIZES = ['small', 'medium', 'large', 'xlarge', 'pullet'];
 const PAYMENT_METHODS = ['cash', 'mobile_money', 'bank_transfer', 'cheque'];
 const methodLabel = (m) =>
 	m?.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase());
