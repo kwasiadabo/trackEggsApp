@@ -424,7 +424,7 @@ export default function Bank() {
 							</button>
 						</>
 					)}
-					{isAdmin && tab === 'accounts' && (
+					{isManager && tab === 'accounts' && (
 						<button className="btn btn-primary" onClick={openCreateAccount}>
 							+ Add Account
 						</button>
