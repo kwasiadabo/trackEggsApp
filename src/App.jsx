@@ -19,6 +19,7 @@ import CustomerStatement from './pages/CustomerStatement';
 import MailRecipients    from './pages/MailRecipients';
 import FarmSetup         from './pages/FarmSetup';
 import ChangePassword    from './pages/ChangePassword';
+import Bank             from './pages/Bank';
 
 const PAGE_TITLES = {
   '/':                 'Dashboard',
@@ -34,6 +35,7 @@ const PAGE_TITLES = {
   '/mail-recipients':  'Mail Recipients',
   '/farm-setup':       'Farm Setup',
   '/change-password':  'Change Password',
+  '/bank':             'Bank Ledger',
 };
 
 function Topbar({ onMenuOpen }) {
@@ -122,6 +124,9 @@ export default function App() {
           } />
           <Route path="/change-password" element={
             <ProtectedRoute><AppShell><ChangePassword /></AppShell></ProtectedRoute>
+          } />
+          <Route path="/bank" element={
+            <ProtectedRoute><AppShell><Bank /></AppShell></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { salesApi, customersApi, paymentsApi } from '../services/api';
+import { salesApi, customersApi, paymentsApi, bankApi } from '../services/api';
 import { useFetch } from '../hooks/useFetch';
 import {
 	Loading,
@@ -27,6 +27,7 @@ const EMPTY_FORM = {
 	unitPrice: '',
 	saleDate: '',
 	notes: '',
+	bankAccountId: '',
 };
 
 export default function Sales() {
@@ -37,7 +38,8 @@ export default function Sales() {
 		error,
 		reload,
 	} = useFetch(() => salesApi.getAll());
-	const { data: customers } = useFetch(() => customersApi.getAll());
+	const { data: customers }     = useFetch(() => customersApi.getAll());
+	const { data: bankAccounts }  = useFetch(() => bankApi.getAccounts());
 
 	const [showForm, setShowForm] = useState(false);
 	const [editItem, setEditItem] = useState(null);
@@ -960,6 +962,19 @@ export default function Sales() {
 									onChange={handleChange}
 								/>
 							</div>
+							{!editItem && bankAccounts?.length > 0 && (
+								<div className="form-group" style={{ gridColumn: '1 / -1' }}>
+									<label>Deposit to bank account <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+									<select name="bankAccountId" value={form.bankAccountId} onChange={handleChange}>
+										<option value="">— No deposit —</option>
+										{bankAccounts.map((a) => (
+											<option key={a.id} value={a.id}>
+												{a.accountName} — {a.bankName}
+											</option>
+										))}
+									</select>
+								</div>
+							)}
 						</div>
 						{totalAmount !== null && (
 							<p

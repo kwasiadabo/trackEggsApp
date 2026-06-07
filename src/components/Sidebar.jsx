@@ -9,17 +9,23 @@ const links = [
 	{ to: '/customers', icon: '👥', label: 'Customers' },
 	{ to: '/payments', icon: '💳', label: 'Payments' },
 	{ to: '/debtors', icon: '⚠️', label: 'Debtors' },
-	{ to: '/expenses',  icon: '💸', label: 'Expenses' },
+	{ to: '/expenses', icon: '💸', label: 'Expenses' },
 	{ to: '/statement', icon: '📄', label: 'Customer Statement' },
-	{ to: '/users',           icon: '🔐', label: 'Users',            adminOnly: true },
-	{ to: '/mail-recipients', icon: '📧', label: 'Mail Recipients',  adminOnly: true },
-	{ to: '/farm-setup',      icon: '🏡', label: 'Farm Setup',       adminOnly: true },
+	{ to: '/bank', icon: '🏦', label: 'Bank Ledger', managerOnly: true },
+	{ to: '/users', icon: '🔐', label: 'Users', adminOnly: true },
+	{
+		to: '/mail-recipients',
+		icon: '📧',
+		label: 'Mail Recipients',
+		adminOnly: true,
+	},
+	{ to: '/farm-setup', icon: '🏡', label: 'Farm Setup', managerOnly: true },
 ];
 
 const ROLE_COLORS = { admin: '#d4750a', manager: '#2e7d32', viewer: '#1565c0' };
 
 export default function Sidebar({ open, onClose }) {
-	const { user, logout, isAdmin } = useAuth();
+	const { user, logout, isAdmin, isManager } = useAuth();
 	const navigate = useNavigate();
 
 	const handleLogout = async () => {
@@ -67,7 +73,9 @@ export default function Sidebar({ open, onClose }) {
 
 				<nav className="sidebar-nav">
 					{links
-						.filter((l) => !l.adminOnly || isAdmin)
+						.filter(
+							(l) => (!l.adminOnly || isAdmin) && (!l.managerOnly || isManager),
+						)
 						.map(({ to, icon, label }) => (
 							<NavLink
 								key={to}
@@ -139,7 +147,9 @@ export default function Sidebar({ open, onClose }) {
 						</div>
 						<NavLink
 							to="/change-password"
-							className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+							className={({ isActive }) =>
+								`nav-link${isActive ? ' active' : ''}`
+							}
 							onClick={handleNavClick}
 							style={{ marginBottom: 6, fontSize: '0.82rem' }}
 						>

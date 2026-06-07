@@ -164,4 +164,16 @@ export const farmsApi = {
   remove:    (id)       => api.delete(`/farms/${id}`),
 };
 
+// ── Bank ──────────────────────────────────────────────────────
+export const bankApi = {
+  getAccounts:     ()         => api.get('/bank-accounts'),
+  createAccount:   (data)     => api.post('/bank-accounts', data),
+  updateAccount:   (id, data) => api.put(`/bank-accounts/${id}`, data),
+  getTransactions: (params)   => api.get('/bank-transactions', { params }),
+  deposit:         (data)     => api.post('/bank-transactions/deposit', data),
+  withdrawal:      (data)     => api.post('/bank-transactions/withdrawal', data),
+  approve:         (id)       => api.put(`/bank-transactions/${id}/approve`),
+  reject:          (id, data) => api.put(`/bank-transactions/${id}/reject`, data),
+};
+
 export default api;
