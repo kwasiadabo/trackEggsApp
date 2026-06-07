@@ -1,5 +1,41 @@
 import Modal from './Modal';
-import { fmt, fmtDate } from './ui';
+import { fmt, fmtDate, toast } from './ui';
+
+function normalisePhone(phone) {
+	if (!phone) return null;
+	const digits = phone.replace(/\D/g, '');
+	if (digits.startsWith('233')) return '+' + digits;
+	if (digits.startsWith('0') && digits.length === 10) return '+233' + digits.slice(1);
+	return '+' + digits;
+}
+
+function buildWhatsAppUrl({ invoiceNo, customer, saleDate, items, notes }) {
+	const phone = normalisePhone(customer?.phone);
+	const total = items.reduce((s, i) => s + Number(i.totalAmount || 0), 0);
+	const lines = items
+		.map(
+			(i) =>
+				`  • ${i.eggSize} × ${i.quantity} crates @ GH₵${Number(i.unitPrice).toFixed(2)} = GH₵${Number(i.totalAmount || Number(i.quantity) * Number(i.unitPrice)).toFixed(2)}`,
+		)
+		.join('\n');
+
+	const text = [
+		`*EggTrack Invoice — ${invoiceNo}*`,
+		`Date: ${fmtDate(saleDate + 'T12:00:00')}`,
+		`Customer: ${customer?.name || ''}`,
+		'',
+		'*Items:*',
+		lines,
+		'',
+		`*Total Due: GH₵${total.toFixed(2)}*`,
+		notes ? `\nNote: ${notes}` : '',
+		'\nThank you for your business!',
+	]
+		.join('\n')
+		.trim();
+
+	return phone ? `https://wa.me/${phone}?text=${encodeURIComponent(text)}` : null;
+}
 
 // Printable invoice — used after creation and when re-viewing from the table.
 // Props:
@@ -271,9 +307,23 @@ export default function InvoiceView({ invoiceNo, customer, saleDate, items, note
 					</div>
 
 					{/* ── Action buttons ── */}
-					<div className="invoice-actions" style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+					<div className="invoice-actions" style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
 						<button className="btn btn-primary" onClick={handlePrint}>
 							🖨 Print / Save as PDF
+						</button>
+						<button
+							className="btn btn-primary"
+							style={{ background: '#25D366', borderColor: '#25D366' }}
+							onClick={() => {
+								const url = buildWhatsAppUrl({ invoiceNo, customer, saleDate, items, notes });
+								if (!url) {
+									toast('No phone number saved for this customer', 'error');
+									return;
+								}
+								window.open(url, '_blank', 'noopener');
+							}}
+						>
+							📲 Send via WhatsApp
 						</button>
 						<button className="btn btn-secondary" onClick={onClose}>
 							Close

@@ -14,6 +14,37 @@ import { useAuth } from '../context/AuthContext';
 import Modal from '../components/Modal';
 import ConfirmDelete from '../components/ConfirmDelete';
 
+function normalisePhone(phone) {
+	if (!phone) return null;
+	const digits = phone.replace(/\D/g, '');
+	if (digits.startsWith('233')) return '+' + digits;
+	if (digits.startsWith('0') && digits.length === 10) return '+233' + digits.slice(1);
+	return '+' + digits;
+}
+
+function buildPaymentWhatsAppUrl(receipt) {
+	const phone = normalisePhone(receipt.customerPhone);
+	const text = [
+		`*EggTrack Payment Receipt — ${receipt.receiptNo}*`,
+		`Date: ${receipt.paymentDate}`,
+		`Customer: ${receipt.customerName}`,
+		'',
+		`Amount Paid: GH₵${Number(receipt.amount).toFixed(2)}`,
+		`Method: ${receipt.method?.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}`,
+		receipt.linkedSale
+			? `For Sale: Sale #${receipt.linkedSale.id} — ${receipt.linkedSale.eggSize} × ${receipt.linkedSale.quantity} crates (GH₵${Number(receipt.linkedSale.totalAmount).toFixed(2)})`
+			: '',
+		receipt.notes ? `Notes: ${receipt.notes}` : '',
+		'',
+		'✅ PAYMENT CONFIRMED',
+		'Thank you for your payment!',
+	]
+		.filter((l) => l !== undefined)
+		.join('\n')
+		.trim();
+	return phone ? `https://wa.me/${phone}?text=${encodeURIComponent(text)}` : null;
+}
+
 const METHODS = ['cash', 'mobile_money', 'bank_transfer', 'cheque'];
 const EMPTY_FORM = {
 	customerId: '',
@@ -85,9 +116,9 @@ export default function Payments() {
 				toast('Payment updated ✓');
 				closeForm();
 			} else {
-				const customerName =
-					customers?.find((c) => String(c.id) === String(form.customerId))?.name ||
-					'Customer';
+				const customerObj = customers?.find((c) => String(c.id) === String(form.customerId));
+				const customerName = customerObj?.name || 'Customer';
+				const customerPhone = customerObj?.phone || null;
 				const linkedSale = form.saleId
 					? filteredSales.find((s) => String(s.id) === String(form.saleId))
 					: null;
@@ -98,6 +129,7 @@ export default function Payments() {
 				setReceipt({
 					receiptNo: `PAY-${createdId || Date.now()}`,
 					customerName,
+					customerPhone,
 					amount: snapshot.amount,
 					method: snapshot.method,
 					paymentDate: snapshot.paymentDate || new Date().toISOString().split('T')[0],
@@ -294,7 +326,7 @@ export default function Payments() {
 					</div>
 
 					{/* Actions */}
-					<div className="receipt-actions" style={{ display: 'flex', gap: 10 }}>
+					<div className="receipt-actions" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
 						<button className="btn btn-primary" onClick={() => {
 							const cleanup = () => { document.body.removeAttribute('data-print'); window.removeEventListener('afterprint', cleanup); };
 							window.addEventListener('afterprint', cleanup);
@@ -302,6 +334,17 @@ export default function Payments() {
 							window.print();
 						}}>
 							🖨 Print Receipt
+						</button>
+						<button
+							className="btn btn-primary"
+							style={{ background: '#25D366', borderColor: '#25D366' }}
+							onClick={() => {
+								const url = buildPaymentWhatsAppUrl(receipt);
+								if (!url) { toast('No phone number saved for this customer', 'error'); return; }
+								window.open(url, '_blank', 'noopener');
+							}}
+						>
+							📲 Send via WhatsApp
 						</button>
 						<button className="btn btn-secondary" onClick={() => setReceipt(null)}>
 							Dismiss
