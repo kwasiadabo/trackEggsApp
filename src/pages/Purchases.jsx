@@ -25,6 +25,14 @@ const EMPTY_FORM = {
 	notes: '',
 };
 
+function statusBadge(status) {
+	if (status === 'pending')
+		return <span className="badge badge-amber">Pending Approval</span>;
+	if (status === 'rejected')
+		return <span className="badge badge-red">Rejected</span>;
+	return <span className="badge badge-green">Approved</span>;
+}
+
 export default function Purchases() {
 	const { isManager, isAdmin } = useAuth();
 	const { data, loading, error, reload } = useFetch(() =>
@@ -82,7 +90,7 @@ export default function Purchases() {
 				})),
 			});
 			toast(
-				`${batchLines.length} purchase line${batchLines.length > 1 ? 's' : ''} recorded ✓`,
+				`${batchLines.length} purchase line${batchLines.length > 1 ? 's' : ''} submitted — awaiting admin approval ✓`,
 			);
 			closeBatch();
 			reload();
@@ -102,6 +110,37 @@ export default function Purchases() {
 	const [search, setSearch] = useState('');
 	const [fromDate, setFromDate] = useState('');
 	const [toDate, setToDate] = useState('');
+	const [statusFilter, setStatusFilter] = useState('');
+
+	// ── Approve / Reject (admin) ────────────────────────────────────────────────
+	const [rejectTarget, setRejectTarget] = useState(null);
+	const [rejectNote, setRejectNote] = useState('');
+	const [savingReject, setSavingReject] = useState(false);
+
+	const handleApprove = async (id) => {
+		try {
+			await purchasesApi.approve(id);
+			toast('Purchase approved & inventory updated ✓');
+			reload();
+		} catch (err) {
+			toast(err.message, 'error');
+		}
+	};
+
+	const handleRejectSubmit = async () => {
+		setSavingReject(true);
+		try {
+			await purchasesApi.reject(rejectTarget.id, { rejectionNote: rejectNote });
+			toast('Purchase rejected');
+			setRejectTarget(null);
+			setRejectNote('');
+			reload();
+		} catch (err) {
+			toast(err.message, 'error');
+		} finally {
+			setSavingReject(false);
+		}
+	};
 
 	const openCreate = () => {
 		setForm(EMPTY_FORM);
@@ -134,10 +173,14 @@ export default function Purchases() {
 		try {
 			if (editItem) {
 				await purchasesApi.update(editItem.id, form);
-				toast('Purchase updated & inventory adjusted ✓');
+				toast(
+					editItem.status === 'approved'
+						? 'Purchase updated & inventory adjusted ✓'
+						: 'Purchase updated ✓',
+				);
 			} else {
 				await purchasesApi.create(form);
-				toast('Purchase recorded & inventory updated ✓');
+				toast('Purchase submitted — awaiting admin approval ✓');
 			}
 			closeForm();
 			reload();
@@ -152,7 +195,11 @@ export default function Purchases() {
 		setDeleting(true);
 		try {
 			await purchasesApi.remove(deleteItem.id);
-			toast('Purchase deleted & inventory reversed ✓');
+			toast(
+				deleteItem.status === 'approved'
+					? 'Purchase deleted & inventory reversed ✓'
+					: 'Purchase deleted ✓',
+			);
 			setDeleteItem(null);
 			reload();
 		} catch (err) {
@@ -171,6 +218,7 @@ export default function Purchases() {
 			? (Number(form.quantity) * Number(form.costPerTray)).toFixed(2)
 			: null;
 	const filteredData = data?.filter((p) => {
+		if (statusFilter && p.status !== statusFilter) return false;
 		if (!search.trim() && !fromDate && !toDate) return true;
 		const q = search.toLowerCase();
 		const matchesSearch =
@@ -192,10 +240,14 @@ export default function Purchases() {
 		setSearch('');
 		setFromDate('');
 		setToDate('');
+		setStatusFilter('');
 	};
+
+	const pendingCount = data?.filter((p) => p.status === 'pending').length || 0;
 
 	const totalCostSum =
 		filteredData?.reduce((sum, p) => {
+			if (p.status === 'rejected') return sum;
 			return sum + Number(p.totalCost || 0);
 		}, 0) || 0;
 
@@ -223,6 +275,16 @@ export default function Purchases() {
 						onChange={handleToDateChange}
 						title="To date"
 					/>
+					<select
+						value={statusFilter}
+						onChange={(e) => setStatusFilter(e.target.value)}
+						title="Filter by approval status"
+					>
+						<option value="">All statuses</option>
+						<option value="pending">Pending Approval</option>
+						<option value="approved">Approved</option>
+						<option value="rejected">Rejected</option>
+					</select>
 					<button
 						type="button"
 						onClick={resetFilters}
@@ -246,6 +308,27 @@ export default function Purchases() {
 				</div>
 			</div>
 
+			{isAdmin && pendingCount > 0 && (
+				<div
+					className="no-print"
+					style={{
+						background: 'var(--warning-bg)',
+						border: '1px solid #ffcc80',
+						borderRadius: 10,
+						padding: '12px 18px',
+						marginBottom: 16,
+						display: 'flex',
+						alignItems: 'center',
+						gap: 10,
+					}}
+				>
+					<span style={{ fontSize: '1.2rem' }}>⚠️</span>
+					<span style={{ fontSize: '0.9rem', color: 'var(--warning)', fontWeight: 600 }}>
+						{pendingCount} purchase{pendingCount > 1 ? 's' : ''} awaiting your approval
+					</span>
+				</div>
+			)}
+
 			<div className="card">
 				{loading ? (
 					<Loading />
@@ -261,11 +344,12 @@ export default function Purchases() {
 									<th>#</th>
 									<th>Date</th>
 									<th>Farm</th>
+									<th>Status</th>
 									<th>Size</th>
 									<th className="text-right">Qty</th>
 									<th className="text-right">Cost/Crate</th>
 									<th className="text-right">Total</th>
-									{isManager && <th style={{ width: 90 }}>Actions</th>}
+									{isManager && <th className="no-print" style={{ width: 90 }}>Actions</th>}
 								</tr>
 							</thead>
 							<tbody>
@@ -274,6 +358,25 @@ export default function Purchases() {
 										<td>{index + 1}</td>
 										<td>{fmtDate(p.purchaseDate)}</td>
 										<td style={{ fontWeight: 500 }}>{p.farmName}</td>
+										<td>
+											<span
+												title={
+													p.status === 'rejected'
+														? p.rejectionNote
+															? `Rejected by ${p.approvedByName || 'admin'}: ${p.rejectionNote}`
+															: `Rejected by ${p.approvedByName || 'admin'}`
+														: p.status === 'approved'
+															? p.approvedByName
+																? `Approved by ${p.approvedByName}`
+																: undefined
+															: p.initiatedByName
+																? `Submitted by ${p.initiatedByName}`
+																: undefined
+												}
+											>
+												{statusBadge(p.status)}
+											</span>
+										</td>
 										<td>
 											<EggBadge size={p.eggSize} />
 										</td>
@@ -288,8 +391,29 @@ export default function Purchases() {
 											{fmt(p.totalCost)}
 										</td>
 										{isManager && (
-											<td>
-												<div style={{ display: 'flex', gap: 6 }}>
+											<td className="no-print">
+												<div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+													{isAdmin && p.status === 'pending' && (
+														<>
+															<button
+																className="btn btn-primary"
+																style={{ padding: '4px 10px', fontSize: '0.78rem' }}
+																onClick={() => handleApprove(p.id)}
+															>
+																✓ Approve
+															</button>
+															<button
+																className="btn btn-danger"
+																style={{ padding: '4px 10px', fontSize: '0.78rem' }}
+																onClick={() => {
+																	setRejectTarget(p);
+																	setRejectNote('');
+																}}
+															>
+																✕ Reject
+															</button>
+														</>
+													)}
 													<button
 														className="btn btn-secondary"
 														style={{ padding: '4px 10px', fontSize: '0.78rem' }}
@@ -318,7 +442,7 @@ export default function Purchases() {
 							<tfoot>
 								<tr>
 									<td
-										colSpan={isManager ? 6 : 5}
+										colSpan={7}
 										style={{
 											textAlign: 'right',
 											fontWeight: 1000,
@@ -574,6 +698,20 @@ export default function Purchases() {
 						</div>
 
 						<div
+							style={{
+								background: 'var(--warning-bg)',
+								border: '1px solid #ffcc80',
+								borderRadius: 8,
+								padding: '10px 14px',
+								marginBottom: 16,
+								fontSize: '0.82rem',
+								color: 'var(--warning)',
+							}}
+						>
+							⚠ Purchase requests require admin approval before inventory is updated.
+						</div>
+
+						<div
 							style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}
 						>
 							<button
@@ -588,7 +726,7 @@ export default function Purchases() {
 								className="btn btn-primary"
 								disabled={batchSaving || !batchFarm}
 							>
-								{batchSaving ? 'Saving…' : '🚚 Record Purchase'}
+								{batchSaving ? 'Saving…' : 'Submit Request'}
 							</button>
 						</div>
 					</form>
@@ -702,7 +840,7 @@ export default function Purchases() {
 								})}
 							</p>
 						)}
-						{editItem && (
+						{editItem && editItem.status === 'approved' && (
 							<p
 								style={{
 									marginTop: 8,
@@ -712,6 +850,33 @@ export default function Purchases() {
 							>
 								⚡ Inventory will be adjusted for the quantity/size difference.
 							</p>
+						)}
+						{editItem && editItem.status === 'pending' && (
+							<p
+								style={{
+									marginTop: 8,
+									fontSize: '0.78rem',
+									color: 'var(--warning)',
+								}}
+							>
+								⚠ This purchase is awaiting admin approval — inventory will only
+								be updated once approved.
+							</p>
+						)}
+						{!editItem && (
+							<div
+								style={{
+									background: 'var(--warning-bg)',
+									border: '1px solid #ffcc80',
+									borderRadius: 8,
+									padding: '10px 14px',
+									marginTop: 12,
+									fontSize: '0.82rem',
+									color: 'var(--warning)',
+								}}
+							>
+								⚠ Purchase requests require admin approval before inventory is updated.
+							</div>
 						)}
 						<div
 							style={{
@@ -733,7 +898,7 @@ export default function Purchases() {
 								type="submit"
 								disabled={saving}
 							>
-								{saving ? 'Saving…' : editItem ? 'Update' : 'Create'}
+								{saving ? 'Saving…' : editItem ? 'Update' : 'Submit Request'}
 							</button>
 						</div>
 					</form>
@@ -743,11 +908,72 @@ export default function Purchases() {
 			{/* Delete confirm */}
 			{deleteItem && (
 				<ConfirmDelete
-					message={`Delete purchase of ${deleteItem.quantity} Crates from ${deleteItem.farmName}? Inventory will be reversed.`}
+					message={
+						deleteItem.status === 'approved'
+							? `Delete purchase of ${deleteItem.quantity} Crates from ${deleteItem.farmName}? Inventory will be reversed.`
+							: `Delete purchase of ${deleteItem.quantity} Crates from ${deleteItem.farmName}?`
+					}
 					onConfirm={handleDelete}
 					onCancel={() => setDeleteItem(null)}
 					loading={deleting}
 				/>
+			)}
+
+			{/* Reject confirm */}
+			{rejectTarget && (
+				<Modal
+					title="✕ Reject Purchase"
+					onClose={() => {
+						setRejectTarget(null);
+						setRejectNote('');
+					}}
+				>
+					<p
+						style={{
+							marginBottom: 16,
+							color: 'var(--text-secondary)',
+							fontSize: '0.9rem',
+						}}
+					>
+						Rejecting the purchase of{' '}
+						<strong>{rejectTarget.quantity} Crates</strong> ({rejectTarget.eggSize})
+						from <strong>{rejectTarget.farmName}</strong>. Inventory will not be
+						updated.
+					</p>
+					<div className="form-group">
+						<label>Rejection reason (optional)</label>
+						<input
+							value={rejectNote}
+							onChange={(e) => setRejectNote(e.target.value)}
+							placeholder="e.g. Price too high, duplicate entry"
+						/>
+					</div>
+					<div
+						style={{
+							display: 'flex',
+							gap: 10,
+							marginTop: 20,
+							justifyContent: 'flex-end',
+						}}
+					>
+						<button
+							className="btn btn-secondary"
+							onClick={() => {
+								setRejectTarget(null);
+								setRejectNote('');
+							}}
+						>
+							Cancel
+						</button>
+						<button
+							className="btn btn-danger"
+							onClick={handleRejectSubmit}
+							disabled={savingReject}
+						>
+							{savingReject ? 'Rejecting…' : 'Confirm Reject'}
+						</button>
+					</div>
+				</Modal>
 			)}
 		</div>
 	);

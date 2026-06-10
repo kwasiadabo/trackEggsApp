@@ -88,12 +88,14 @@ export const inventoryApi = { get: () => api.get('/inventory') };
 
 // ── Purchases ─────────────────────────────────────────────
 export const purchasesApi = {
-  getAll:       ()         => api.get('/purchases'),
+  getAll:       (params)   => api.get('/purchases', { params }),
   getOne:       (id)       => api.get(`/purchases/${id}`),
   create:       (data)     => api.post('/purchases', data),
   createBatch:  (data)     => api.post('/purchases/batch', data),
   update:       (id, data) => api.put(`/purchases/${id}`, data),
   remove:       (id)       => api.delete(`/purchases/${id}`),
+  approve:      (id)       => api.put(`/purchases/${id}/approve`),
+  reject:       (id, data) => api.put(`/purchases/${id}/reject`, data),
 };
 
 // ── Sales ─────────────────────────────────────────────────
