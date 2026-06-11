@@ -129,7 +129,8 @@ export default function MailRecipients() {
 			{/* ── Email Schedule Card ── */}
 			<div className="card" style={{ marginBottom: 16 }}>
 				<div style={{
-					fontFamily: "'DM Serif Display', serif",
+					fontWeight: 600,
+					letterSpacing: '-0.01em',
 					fontSize: '0.95rem',
 					marginBottom: 14,
 					paddingBottom: 10,

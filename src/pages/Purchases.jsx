@@ -313,7 +313,7 @@ export default function Purchases() {
 					className="no-print"
 					style={{
 						background: 'var(--warning-bg)',
-						border: '1px solid #ffcc80',
+						border: '1px solid #fed7aa',
 						borderRadius: 10,
 						padding: '12px 18px',
 						marginBottom: 16,
@@ -700,7 +700,7 @@ export default function Purchases() {
 						<div
 							style={{
 								background: 'var(--warning-bg)',
-								border: '1px solid #ffcc80',
+								border: '1px solid #fed7aa',
 								borderRadius: 8,
 								padding: '10px 14px',
 								marginBottom: 16,
@@ -867,7 +867,7 @@ export default function Purchases() {
 							<div
 								style={{
 									background: 'var(--warning-bg)',
-									border: '1px solid #ffcc80',
+									border: '1px solid #fed7aa',
 									borderRadius: 8,
 									padding: '10px 14px',
 									marginTop: 12,

@@ -103,13 +103,13 @@ function SearchableSelect({ options, value, onChange, placeholder = 'Search…',
 										padding: '8px 12px',
 										cursor: 'pointer',
 										fontSize: '0.875rem',
-										background: opt === value ? 'var(--cream, #f9f5f0)' : undefined,
+										background: opt === value ? 'var(--cream)' : undefined,
 										fontWeight: opt === value ? 600 : undefined,
 									}}
-									onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--cream, #f9f5f0)')}
+									onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--cream)')}
 									onMouseLeave={(e) =>
 										(e.currentTarget.style.background =
-											opt === value ? 'var(--cream, #f9f5f0)' : '')
+											opt === value ? 'var(--cream)' : '')
 									}
 								>
 									{opt}
@@ -470,7 +470,7 @@ export default function Bank() {
 				<div
 					style={{
 						background: 'var(--warning-bg)',
-						border: '1px solid #ffcc80',
+						border: '1px solid #fed7aa',
 						borderRadius: 10,
 						padding: '12px 18px',
 						marginBottom: 16,
@@ -1282,7 +1282,7 @@ export default function Bank() {
 							<div
 								style={{
 									background: 'var(--warning-bg)',
-									border: '1px solid #ffcc80',
+									border: '1px solid #fed7aa',
 									borderRadius: 8,
 									padding: '10px 14px',
 									marginTop: 10,

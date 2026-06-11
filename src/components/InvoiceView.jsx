@@ -118,7 +118,7 @@ export default function InvoiceView({ invoiceNo, customer, saleDate, items, note
 						}}>
 							<div>
 								<div style={{
-									fontFamily: "'DM Serif Display', serif",
+									fontWeight: 800,
 									fontSize: '1.8rem',
 									color: 'var(--amber-dark)',
 									letterSpacing: '-0.02em',
@@ -261,7 +261,7 @@ export default function InvoiceView({ invoiceNo, customer, saleDate, items, note
 						}}>
 							<div style={{
 								background: 'var(--success-bg)',
-								border: '1px solid #a5d6a7',
+								border: '1px solid #bbf7d0',
 								borderRadius: 10,
 								padding: '14px 20px',
 								textAlign: 'right',

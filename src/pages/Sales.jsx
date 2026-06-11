@@ -310,8 +310,9 @@ export default function Sales() {
 					>
 						<div
 							style={{
-								fontFamily: "'DM Serif Display', serif",
+								fontWeight: 800,
 								fontSize: '1.3rem',
+								letterSpacing: '-0.02em',
 								color: 'var(--amber-dark)',
 							}}
 						>
@@ -1274,7 +1275,7 @@ export default function Sales() {
 									readOnly
 									value={`${fmtDate(paymentSale.saleDate)} — ${paymentSale.eggSize} × ${paymentSale.quantity} (${fmt(paymentSale.totalAmount)})`}
 									style={{
-										background: 'var(--bg-subtle, #f5f5f5)',
+										background: 'var(--warm-white)',
 										cursor: 'default',
 									}}
 								/>

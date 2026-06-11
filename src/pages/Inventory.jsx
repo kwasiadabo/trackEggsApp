@@ -9,9 +9,9 @@ const D60_AGO         = new Date(NOW - 60 * 864e5);
 
 // ── Design tokens per egg size ────────────────────────────────────────────────
 const SIZE_CFG = {
-	small:   { color: 'var(--brown-light)', light: 'rgba(122,69,32,.1)',  label: 'Small Eggs' },
-	medium:  { color: 'var(--amber)',       light: 'rgba(212,117,10,.1)', label: 'Medium Eggs' },
-	large:   { color: 'var(--success)',     light: 'rgba(46,125,50,.1)',  label: 'Large Eggs' },
+	small:   { color: 'var(--brown-light)', light: 'rgba(120,113,108,.1)',     label: 'Small Eggs' },
+	medium:  { color: 'var(--amber)',       light: 'rgba(var(--amber-rgb),.1)', label: 'Medium Eggs' },
+	large:   { color: 'var(--success)',     light: 'rgba(22,163,74,.1)',       label: 'Large Eggs' },
 };
 
 // ── Mini components ───────────────────────────────────────────────────────────
@@ -52,7 +52,8 @@ function Trend({ cur, prev }) {
 function SectionHead({ icon, title }) {
 	return (
 		<div style={{
-			fontFamily: "'DM Serif Display', serif",
+			fontWeight: 600,
+			letterSpacing: '-0.01em',
 			fontSize: '0.97rem',
 			color: 'var(--text-primary)',
 			marginBottom: 14,
@@ -275,7 +276,7 @@ export default function Inventory() {
 										fontSize: '1.5rem', flexShrink: 0,
 									}}>🥚</div>
 									<div>
-										<div style={{ fontFamily: "'DM Serif Display', serif", fontSize: '1rem' }}>
+										<div style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: '1rem' }}>
 											{cfg.label}
 										</div>
 										<StockBadge qty={item.quantity} />

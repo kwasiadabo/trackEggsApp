@@ -1,15 +1,47 @@
 import { useState } from 'react';
-import { debtorsApi } from '../services/api';
+import { debtorsApi, recipientsApi } from '../services/api';
 import { useFetch } from '../hooks/useFetch';
-import { Loading, ErrorMsg, Empty, fmt, fmtDate, PrintHeader } from '../components/ui';
+import { Loading, ErrorMsg, fmt, fmtDate, PrintHeader, toast } from '../components/ui';
+import Modal from '../components/Modal';
 
 export default function Debtors() {
 	const { data, loading, error } = useFetch(() => debtorsApi.get());
+	const { data: recipients } = useFetch(() => recipientsApi.getAll());
 
 	const totalDebt = data?.reduce((s, d) => s + Number(d.balance), 0) || 0;
 	const overdueCount = data?.filter((d) => d.overdue).length || 0;
 	const [search, setSearch] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
+
+	// ── Send report modal ──────────────────────────────────────────────────────
+	const [showSendModal, setShowSendModal] = useState(false);
+	const [selectedIds, setSelectedIds] = useState([]);
+	const [sending, setSending] = useState(false);
+
+	const openSendModal = () => {
+		setSelectedIds((recipients || []).filter((r) => r.isActive).map((r) => r.id));
+		setShowSendModal(true);
+	};
+	const closeSendModal = () => setShowSendModal(false);
+
+	const toggleRecipient = (id) => {
+		setSelectedIds((p) =>
+			p.includes(id) ? p.filter((i) => i !== id) : [...p, id],
+		);
+	};
+
+	const handleSendReport = async () => {
+		setSending(true);
+		try {
+			const res = await debtorsApi.sendReport(selectedIds);
+			toast(res.data?.message || 'Debtors list sent ✓');
+			setShowSendModal(false);
+		} catch (err) {
+			toast(err.message, 'error');
+		} finally {
+			setSending(false);
+		}
+	};
 
 	// const filteredData = (data || []).filter((d) =>
 	// 	d?.customerName?.toLowerCase().includes((search || '').toLowerCase()),
@@ -36,7 +68,10 @@ export default function Debtors() {
 			<PrintHeader title="Outstanding Balances" />
 			<div className="section-header no-print" style={{ marginBottom: 16 }}>
 				<span className="section-title">⚠️ Debtors</span>
-				<button className="btn btn-secondary" onClick={() => window.print()} style={{ whiteSpace: 'nowrap' }}>🖨 Print</button>
+				<div style={{ display: 'flex', gap: 8 }}>
+					<button className="btn btn-secondary" onClick={openSendModal} style={{ whiteSpace: 'nowrap' }}>📧 Send to Recipients</button>
+					<button className="btn btn-secondary" onClick={() => window.print()} style={{ whiteSpace: 'nowrap' }}>🖨 Print</button>
+				</div>
 			</div>
 			<div className="stats-grid" style={{ marginBottom: 24 }}>
 				<div className="stat-card red">
@@ -72,7 +107,7 @@ export default function Debtors() {
 						style={{
 							width: '250px',
 							padding: '8px 12px',
-							border: '1px solid #ddd',
+							border: '1px solid var(--border)',
 							borderRadius: '6px',
 						}}
 					/>
@@ -82,7 +117,7 @@ export default function Debtors() {
 						onChange={(e) => setStatusFilter(e.target.value)}
 						style={{
 							padding: '8px 12px',
-							border: '1px solid #ddd',
+							border: '1px solid var(--border)',
 							borderRadius: '6px',
 						}}
 					>
@@ -151,7 +186,7 @@ export default function Debtors() {
 								<tfoot>
 									<tr
 										style={{
-											background: '#f8f9fa',
+											background: 'var(--warm-white)',
 											fontWeight: 700,
 										}}
 									>
@@ -187,6 +222,64 @@ export default function Debtors() {
 					</div>
 				)}
 			</div>
+
+			{/* ── Send to recipients modal ── */}
+			{showSendModal && (
+				<Modal title="📧 Send Debtors List" onClose={closeSendModal}>
+					{!recipients?.length ? (
+						<p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+							No mail recipients configured yet. Add one on the Mail
+							Recipients page first.
+						</p>
+					) : (
+						<>
+							<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 12 }}>
+								Select who should receive the current debtors report by email.
+							</p>
+							<div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 280, overflowY: 'auto' }}>
+								{recipients.map((r) => (
+									<label
+										key={r.id}
+										style={{
+											display: 'flex',
+											alignItems: 'center',
+											gap: 10,
+											padding: '8px 10px',
+											border: '1px solid var(--border)',
+											borderRadius: 6,
+											cursor: 'pointer',
+										}}
+									>
+										<input
+											type="checkbox"
+											checked={selectedIds.includes(r.id)}
+											onChange={() => toggleRecipient(r.id)}
+											style={{ width: 16, height: 16, accentColor: 'var(--success)', cursor: 'pointer' }}
+										/>
+										<div style={{ flex: 1 }}>
+											<div style={{ fontWeight: 600 }}>{r.name}</div>
+											<div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{r.email}</div>
+										</div>
+										{!r.isActive && <span className="badge badge-brown">Inactive</span>}
+									</label>
+								))}
+							</div>
+						</>
+					)}
+
+					<div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
+						<button type="button" className="btn btn-secondary" onClick={closeSendModal}>Cancel</button>
+						<button
+							type="button"
+							className="btn btn-primary"
+							onClick={handleSendReport}
+							disabled={sending || !selectedIds.length}
+						>
+							{sending ? 'Sending…' : `Send to ${selectedIds.length} recipient${selectedIds.length !== 1 ? 's' : ''}`}
+						</button>
+					</div>
+				</Modal>
+			)}
 		</div>
 	);
 }

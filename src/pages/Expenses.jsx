@@ -210,7 +210,7 @@ export default function Expenses() {
 
 					{/* Pie chart */}
 					<div className="card">
-						<div style={{ fontFamily: "'DM Serif Display', serif", fontSize: '0.95rem', marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid var(--border-light)' }}>
+						<div style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: '0.95rem', marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid var(--border-light)' }}>
 							🥧 Expenses by Category
 						</div>
 						<ResponsiveContainer width="100%" height={260}>
@@ -230,8 +230,8 @@ export default function Expenses() {
 										<Cell
 											key={i}
 											fill={[
-												'#d4750a','#3d2008','#2e7d32','#1565c0',
-												'#7a4520','#c62828','#e65100','#6a1b9a',
+												'#d97706','#16a34a','#2563eb','#dc2626',
+												'#7c3aed','#0d9488','#db2777','#78716c',
 											][i % 8]}
 										/>
 									))}
@@ -246,7 +246,7 @@ export default function Expenses() {
 
 					{/* Bar chart */}
 					<div className="card">
-						<div style={{ fontFamily: "'DM Serif Display', serif", fontSize: '0.95rem', marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid var(--border-light)' }}>
+						<div style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: '0.95rem', marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid var(--border-light)' }}>
 							📊 Category Comparison
 						</div>
 						<ResponsiveContainer width="100%" height={260}>
@@ -272,8 +272,8 @@ export default function Expenses() {
 										<Cell
 											key={i}
 											fill={[
-												'#d4750a','#3d2008','#2e7d32','#1565c0',
-												'#7a4520','#c62828','#e65100','#6a1b9a',
+												'#d97706','#16a34a','#2563eb','#dc2626',
+												'#7c3aed','#0d9488','#db2777','#78716c',
 											][i % 8]}
 										/>
 									))}
@@ -321,7 +321,7 @@ export default function Expenses() {
 								onChange={(e) => setSearch(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ddd',
+									border: '1px solid var(--border)',
 									borderRadius: '6px',
 									width: '220px',
 								}}
@@ -333,7 +333,7 @@ export default function Expenses() {
 								onChange={(e) => setCategory(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ddd',
+									border: '1px solid var(--border)',
 									borderRadius: '6px',
 								}}
 							>
@@ -352,7 +352,7 @@ export default function Expenses() {
 								onChange={(e) => setFromDate(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ddd',
+									border: '1px solid var(--border)',
 									borderRadius: '6px',
 								}}
 							/>
@@ -364,7 +364,7 @@ export default function Expenses() {
 								onChange={(e) => setToDate(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ddd',
+									border: '1px solid var(--border)',
 									borderRadius: '6px',
 								}}
 							/>
@@ -386,7 +386,7 @@ export default function Expenses() {
 								onChange={(e) => setGroupBy(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ddd',
+									border: '1px solid var(--border)',
 									borderRadius: '6px',
 								}}
 							>
@@ -399,7 +399,7 @@ export default function Expenses() {
 								className="btn btn-secondary"
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ddd',
+									border: '1px solid var(--border)',
 									borderRadius: '6px',
 								}}
 							>
@@ -421,7 +421,7 @@ export default function Expenses() {
 									<>
 										{/* Group Header Row */}
 										{groupBy !== 'none' && (
-											<tr style={{ background: '#eee', fontWeight: 700 }}>
+											<tr style={{ background: 'var(--warm-white)', fontWeight: 700 }}>
 												<td colSpan="5">{group}</td>
 											</tr>
 										)}
@@ -469,7 +469,7 @@ export default function Expenses() {
 								))}
 							</tbody>
 							<tfoot>
-								<tr style={{ background: '#f8f9fa', fontWeight: 700 }}>
+								<tr style={{ background: 'var(--warm-white)', fontWeight: 700 }}>
 									<td colSpan="3" style={{ textAlign: 'right' }}>
 										Total Expenses:
 									</td>

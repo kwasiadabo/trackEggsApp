@@ -55,7 +55,8 @@ function Bar({ pct, color = 'var(--amber)', height = 7 }) {
 function CardHead({ icon, title }) {
 	return (
 		<div style={{
-			fontFamily: "'DM Serif Display', serif",
+			fontWeight: 600,
+			letterSpacing: '-0.01em',
 			fontSize: '0.95rem',
 			color: 'var(--text-primary)',
 			marginBottom: 14,
@@ -247,8 +248,8 @@ export default function Dashboard() {
 			{/* ── 7-day overdue alert ──────────────────────────────────────── */}
 			{sevenDayDebtors.length > 0 && (
 				<div style={{
-					border: '1px solid #f9a825',
-					borderLeft: '5px solid #f9a825',
+					border: '1px solid var(--warning)',
+					borderLeft: '5px solid var(--warning)',
 					background: 'var(--warning-bg)',
 					borderRadius: 'var(--radius)',
 					padding: '14px 18px',
@@ -268,7 +269,7 @@ export default function Dashboard() {
 						<button
 							onClick={() => setAlertExpanded((v) => !v)}
 							style={{
-								background: 'none', border: '1px solid #f9a825',
+								background: 'none', border: '1px solid var(--warning)',
 								borderRadius: 6, padding: '4px 12px',
 								fontSize: '0.8rem', color: 'var(--warning)',
 								cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
@@ -289,7 +290,7 @@ export default function Dashboard() {
 												padding: '6px 10px',
 												fontSize: '0.71rem', textTransform: 'uppercase',
 												letterSpacing: '.04em', color: 'var(--text-muted)',
-												borderBottom: '1px solid #f9a825',
+												borderBottom: '1px solid var(--warning)',
 												whiteSpace: 'nowrap',
 											}}>{h}</th>
 										))}
@@ -707,21 +708,21 @@ export default function Dashboard() {
 								barCategoryGap="28%"
 								barGap={3}
 							>
-								<CartesianGrid strokeDasharray="3 3" stroke="#f0e4d0" />
+								<CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
 								<XAxis
 									dataKey="name"
-									tick={{ fontSize: 11, fill: '#a07850' }}
+									tick={{ fontSize: 11, fill: '#71717a' }}
 									angle={-30}
 									textAnchor="end"
 									interval={0}
 								/>
 								<YAxis
-									tick={{ fontSize: 11, fill: '#a07850' }}
+									tick={{ fontSize: 11, fill: '#71717a' }}
 									tickFormatter={(v) => v >= 1000 ? `₵${(v / 1000).toFixed(0)}k` : `₵${v}`}
 									width={50}
 								/>
 								<Tooltip
-									contentStyle={{ fontSize: '0.82rem', borderRadius: 8, border: '1px solid #e8d8c0' }}
+									contentStyle={{ fontSize: '0.82rem', borderRadius: 8, border: '1px solid #e4e4e7' }}
 									formatter={(value, name) => [
 										`GH₵ ${Number(value).toLocaleString('en-GH', { minimumFractionDigits: 2 })}`,
 										name,
@@ -731,9 +732,9 @@ export default function Dashboard() {
 									}
 								/>
 								<Legend wrapperStyle={{ fontSize: '0.82rem', paddingTop: 12 }} />
-								<RBar dataKey="Sales"    name="Sales Revenue"       fill="#d4750a" radius={[3, 3, 0, 0]} />
-								<RBar dataKey="Payments" name="Payments Received"   fill="#2e7d32" radius={[3, 3, 0, 0]} />
-								<RBar dataKey="Balance"  name="Outstanding Balance" fill="#c62828" radius={[3, 3, 0, 0]} />
+								<RBar dataKey="Sales"    name="Sales Revenue"       fill="#d97706" radius={[3, 3, 0, 0]} />
+								<RBar dataKey="Payments" name="Payments Received"   fill="#16a34a" radius={[3, 3, 0, 0]} />
+								<RBar dataKey="Balance"  name="Outstanding Balance" fill="#dc2626" radius={[3, 3, 0, 0]} />
 							</BarChart>
 						</ResponsiveContainer>
 					</div>

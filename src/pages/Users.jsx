@@ -97,9 +97,9 @@ export default function Users() {
         <div className="card-title">Role Permissions</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
           {[
-            { role: 'admin',   color: '#c62828', desc: 'Full access — create, read, update, delete & manage users' },
-            { role: 'manager', color: '#2e7d32', desc: 'Read + create + edit. Cannot delete records or manage users' },
-            { role: 'viewer',  color: '#1565c0', desc: 'Read-only access to all modules' },
+            { role: 'admin',   color: 'var(--danger)',  desc: 'Full access — create, read, update, delete & manage users' },
+            { role: 'manager', color: 'var(--success)', desc: 'Read + create + edit. Cannot delete records or manage users' },
+            { role: 'viewer',  color: '#2563eb',         desc: 'Read-only access to all modules' },
           ].map(r => (
             <div key={r.role} style={{ borderLeft: `3px solid ${r.color}`, paddingLeft: 12 }}>
               <div style={{ fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', color: r.color, letterSpacing: '0.05em' }}>{r.role}</div>

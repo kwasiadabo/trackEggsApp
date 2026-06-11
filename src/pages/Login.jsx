@@ -35,29 +35,45 @@ export default function Login() {
 				display: 'flex',
 				alignItems: 'center',
 				justifyContent: 'center',
-				background:
-					'linear-gradient(135deg, #3d2008 0%, #7a4520 50%, #d4750a 100%)',
+				background: 'var(--cream)',
+				padding: 20,
 			}}
 		>
 			<div
 				style={{
 					background: '#fff',
+					border: '1px solid var(--border-light)',
 					borderRadius: 16,
 					padding: '40px 36px',
 					width: '100%',
 					maxWidth: 400,
-					boxShadow: '0 24px 60px rgba(0,0,0,0.3)',
+					boxShadow: '0 1px 3px rgba(24,24,27,.04), 0 20px 50px rgba(24,24,27,.08)',
 				}}
 			>
 				{/* Brand */}
 				<div style={{ textAlign: 'center', marginBottom: 32 }}>
-					<div style={{ fontSize: '3rem', lineHeight: 1 }}>🥚</div>
+					<div
+						style={{
+							width: 52,
+							height: 52,
+							borderRadius: 14,
+							background: 'var(--amber)',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							fontSize: '1.6rem',
+							lineHeight: 1,
+							margin: '0 auto 16px',
+						}}
+					>
+						🥚
+					</div>
 					<h1
 						style={{
-							fontFamily: 'DM Serif Display, serif',
-							fontSize: '1.8rem',
-							color: 'var(--brown)',
-							margin: '8px 0 4px',
+							fontSize: '1.5rem',
+							fontWeight: 700,
+							color: 'var(--text-primary)',
+							margin: '0 0 4px',
 							letterSpacing: '-0.02em',
 						}}
 					>
@@ -66,12 +82,10 @@ export default function Login() {
 					<p
 						style={{
 							color: 'var(--text-muted)',
-							fontSize: '0.82rem',
-							textTransform: 'uppercase',
-							letterSpacing: '0.08em',
+							fontSize: '0.85rem',
 						}}
 					>
-						Distribution Management
+						Sign in to your distribution account
 					</p>
 				</div>
 
@@ -80,7 +94,7 @@ export default function Login() {
 						style={{
 							background: 'var(--danger-bg)',
 							color: 'var(--danger)',
-							border: '1px solid #ffcdd2',
+							border: '1px solid #fecaca',
 							borderRadius: 8,
 							padding: '10px 14px',
 							marginBottom: 20,

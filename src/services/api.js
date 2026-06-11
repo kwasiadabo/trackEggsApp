@@ -127,7 +127,10 @@ export const paymentsApi = {
 };
 
 // ── Debtors ───────────────────────────────────────────────
-export const debtorsApi = { get: () => api.get('/debtors') };
+export const debtorsApi = {
+  get:        ()              => api.get('/debtors'),
+  sendReport: (recipientIds)  => api.post('/debtors/send-report', { recipientIds }),
+};
 
 // ── Expenses ──────────────────────────────────────────────
 export const expensesApi = {

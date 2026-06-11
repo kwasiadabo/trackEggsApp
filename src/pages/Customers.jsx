@@ -128,7 +128,7 @@ export default function Customers() {
 								onChange={(e) => setSearch(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ccc',
+									border: '1px solid var(--border)',
 									borderRadius: 6,
 									minWidth: 250,
 								}}

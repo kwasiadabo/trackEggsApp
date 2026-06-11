@@ -227,7 +227,7 @@ export default function Payments() {
 						marginBottom: 14,
 						borderBottom: '2px dashed var(--border)',
 					}}>
-						<div style={{ fontFamily: "'DM Serif Display', serif", fontSize: '1.3rem', color: 'var(--amber-dark)' }}>
+						<div style={{ fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.02em', color: 'var(--amber-dark)' }}>
 							🥚 EggTrack
 						</div>
 						<div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '.06em', textTransform: 'uppercase' }}>
@@ -389,7 +389,7 @@ export default function Payments() {
 								onChange={(e) => setSearch(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ccc',
+									border: '1px solid var(--border)',
 									borderRadius: 6,
 									minWidth: 180,
 								}}
@@ -401,7 +401,7 @@ export default function Payments() {
 								onChange={(e) => setFromDate(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ccc',
+									border: '1px solid var(--border)',
 									borderRadius: 6,
 									minWidth: 250,
 								}}
@@ -413,7 +413,7 @@ export default function Payments() {
 								onChange={(e) => setToDate(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ccc',
+									border: '1px solid var(--border)',
 									borderRadius: 6,
 									minWidth: 250,
 								}}
@@ -424,7 +424,7 @@ export default function Payments() {
 								onChange={(e) => setSelectedCustomer(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ccc',
+									border: '1px solid var(--border)',
 									borderRadius: 6,
 									minWidth: 250,
 								}}
@@ -443,7 +443,7 @@ export default function Payments() {
 								onChange={(e) => setSelectedMethod(e.target.value)}
 								style={{
 									padding: '8px 12px',
-									border: '1px solid #ccc',
+									border: '1px solid var(--border)',
 									borderRadius: 6,
 									minWidth: 250,
 								}}

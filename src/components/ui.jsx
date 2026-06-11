@@ -75,13 +75,13 @@ export function EggBadge({ size }) {
 export function PrintHeader({ title }) {
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   return (
-    <div className="print-only" style={{ marginBottom: 16, paddingBottom: 12, borderBottom: '2px solid #333' }}>
+    <div className="print-only" style={{ marginBottom: 16, paddingBottom: 12, borderBottom: '2px solid var(--text-primary)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1e1008' }}>{title}</div>
-          <div style={{ fontSize: '0.78rem', color: '#6b4c30', marginTop: 3 }}>Printed: {date}</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>{title}</div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: 3 }}>Printed: {date}</div>
         </div>
-        <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#6b4c30' }}>
+        <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
           <div style={{ fontWeight: 700 }}>🥚 EggTrack</div>
           <div>Distribution Manager</div>
         </div>

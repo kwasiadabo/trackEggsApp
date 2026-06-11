@@ -177,9 +177,10 @@ export default function CustomerStatement() {
 						<div>
 							<div
 								style={{
-									fontFamily: "'DM Serif Display', serif",
+									fontWeight: 700,
+									letterSpacing: '-0.02em',
 									fontSize: '1.5rem',
-									color: 'var(--brown)',
+									color: 'var(--text-primary)',
 									lineHeight: 1.1,
 									marginBottom: 4,
 								}}
@@ -193,10 +194,10 @@ export default function CustomerStatement() {
 						<div style={{ textAlign: 'right' }}>
 							<div
 								style={{
-									fontFamily: "'DM Serif Display', serif",
 									fontSize: '1.1rem',
+									letterSpacing: '-0.02em',
 									color: 'var(--amber-dark)',
-									fontWeight: 700,
+									fontWeight: 800,
 								}}
 							>
 								🥚 EggTrack

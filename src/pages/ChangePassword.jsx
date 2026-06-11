@@ -51,6 +51,7 @@ export default function ChangePassword() {
       <div
         style={{
           background: '#fff',
+          border: '1px solid var(--border-light)',
           borderRadius: 16,
           padding: '40px 36px',
           width: '100%',
@@ -62,9 +63,10 @@ export default function ChangePassword() {
           <div style={{ fontSize: '2.2rem', lineHeight: 1 }}>🔑</div>
           <h2
             style={{
-              fontFamily: 'DM Serif Display, serif',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
               fontSize: '1.5rem',
-              color: 'var(--brown)',
+              color: 'var(--text-primary)',
               margin: '8px 0 6px',
             }}
           >
@@ -77,7 +79,7 @@ export default function ChangePassword() {
                 color: 'var(--text-secondary)',
                 lineHeight: 1.5,
                 background: 'var(--warning-bg)',
-                border: '1px solid #ffcc80',
+                border: '1px solid #fed7aa',
                 borderRadius: 8,
                 padding: '10px 14px',
                 marginTop: 8,

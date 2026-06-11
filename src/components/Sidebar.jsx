@@ -22,7 +22,7 @@ const links = [
 	{ to: '/farm-setup', icon: '🏡', label: 'Farm Setup', managerOnly: true },
 ];
 
-const ROLE_COLORS = { admin: '#d4750a', manager: '#2e7d32', viewer: '#1565c0' };
+const ROLE_COLORS = { admin: 'var(--amber)', manager: 'var(--success)', viewer: '#2563eb' };
 
 export default function Sidebar({ open, onClose }) {
 	const { user, logout, isAdmin, isManager } = useAuth();
