@@ -102,7 +102,6 @@ export default function Dashboard() {
 		totalPaid     = 0,
 		outstandingDebt = 0,
 		totalExpenses = 0,
-		netProfit     = 0,
 	} = kpi;
 
 	const salesArr    = salesRaw    || [];
@@ -138,6 +137,7 @@ export default function Dashboard() {
 	// ── Derived KPIs ──────────────────────────────────────────────────────────
 	const totalPurchCost    = purchArr.reduce((s, r) => s + purchTotal(r), 0);
 	const grossProfit       = totalRevenue - totalPurchCost;
+	const netProfit         = grossProfit - totalExpenses;
 	const profitMargin      = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
 	const collectionRate    = totalRevenue > 0 ? (totalPaid / totalRevenue) * 100 : 0;
 	const avgSaleValue      = salesCount > 0 ? totalRevenue / salesCount : 0;
