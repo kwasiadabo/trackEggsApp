@@ -30,6 +30,15 @@ const purchTotal = (p) =>
 	Number(p.totalCost || 0) || Number(p.quantity || 0) * Number(p.costPerTray || 0);
 
 // ── Micro components ──────────────────────────────────────────────────────────
+const TONE_BG = {
+	amber:   'rgba(var(--amber-rgb), .12)',
+	success: 'var(--success-bg)',
+	danger:  'var(--danger-bg)',
+	warning: 'var(--warning-bg)',
+	info:    'var(--info-bg)',
+	brown:   'var(--warm-white)',
+};
+
 function Trend({ cur, prev, invert = false }) {
 	if (!prev || prev === 0) return null;
 	const pct = ((cur - prev) / Math.abs(prev)) * 100;
@@ -52,21 +61,45 @@ function Bar({ pct, color = 'var(--amber)', height = 7 }) {
 	);
 }
 
-function CardHead({ icon, title }) {
+function CardHead({ icon, title, tone = 'amber' }) {
 	return (
 		<div style={{
-			fontWeight: 600,
-			letterSpacing: '-0.01em',
-			fontSize: '0.95rem',
-			color: 'var(--text-primary)',
+			display: 'flex',
+			alignItems: 'center',
+			gap: 10,
 			marginBottom: 14,
 			paddingBottom: 10,
 			borderBottom: '1px solid var(--border-light)',
-			display: 'flex',
-			alignItems: 'center',
-			gap: 7,
 		}}>
-			{icon} {title}
+			<div style={{
+				width: 32, height: 32, borderRadius: 9,
+				background: TONE_BG[tone] || TONE_BG.amber,
+				display: 'flex', alignItems: 'center', justifyContent: 'center',
+				fontSize: '0.95rem', flexShrink: 0,
+			}}>
+				{icon}
+			</div>
+			<div style={{
+				fontWeight: 600,
+				letterSpacing: '-0.01em',
+				fontSize: '0.95rem',
+				color: 'var(--text-primary)',
+			}}>
+				{title}
+			</div>
+		</div>
+	);
+}
+
+function StatIcon({ icon, tone = 'amber' }) {
+	return (
+		<div style={{
+			width: 28, height: 28, borderRadius: 8,
+			background: TONE_BG[tone] || TONE_BG.amber,
+			display: 'flex', alignItems: 'center', justifyContent: 'center',
+			fontSize: '0.85rem', flexShrink: 0,
+		}}>
+			{icon}
 		</div>
 	);
 }
@@ -78,6 +111,16 @@ function Divider() {
 const EGG_COLORS = { small: 'var(--brown-light)', medium: 'var(--amber)', large: 'var(--success)' };
 const methodLabel = (m) =>
 	(m || 'cash').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+const METHOD_COLORS = {
+	cash:          'var(--success)',
+	mobile_money:  'var(--info)',
+	momo:          'var(--info)',
+	bank_transfer: 'var(--amber)',
+	cheque:        'var(--brown-light)',
+	credit:        'var(--brown-light)',
+};
+const methodColor = (m) => METHOD_COLORS[(m || 'cash').toLowerCase()] || 'var(--text-muted)';
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 export default function Dashboard() {
@@ -331,21 +374,30 @@ export default function Dashboard() {
 			<div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(155px, 1fr))' }}>
 
 				<div className="stat-card green">
-					<div className="label">Total Revenue</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Total Revenue</div>
+						<StatIcon icon="💰" tone="success" />
+					</div>
 					<div className="value" style={{ fontSize: '1.15rem' }}>{fmt(totalRevenue)}</div>
 					<div className="sub">{salesCount} sales · avg {fmt(avgSaleValue)}</div>
 					<div style={{ marginTop: 6 }}><Trend cur={tRevenue} prev={lRevenue} /></div>
 				</div>
 
 				<div className="stat-card green">
-					<div className="label">Payments Received</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Payments Received</div>
+						<StatIcon icon="💵" tone="success" />
+					</div>
 					<div className="value" style={{ fontSize: '1.15rem' }}>{fmt(totalPaid)}</div>
 					<div className="sub">{collectionRate.toFixed(1)}% collection rate</div>
 					<div style={{ marginTop: 6 }}><Trend cur={tPaid} prev={lPaid} /></div>
 				</div>
 
 				<div className="stat-card red">
-					<div className="label">Outstanding Debt</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Outstanding Debt</div>
+						<StatIcon icon="🧾" tone="danger" />
+					</div>
 					<div className="value" style={{ fontSize: '1.15rem' }}>{fmt(outstandingDebt)}</div>
 					<div className="sub">
 						{overdueDebtors.length} overdue · {debtorsArr.length} debtors
@@ -353,7 +405,10 @@ export default function Dashboard() {
 				</div>
 
 				<div className={`stat-card ${netProfit >= 0 ? 'green' : 'red'}`}>
-					<div className="label">Net Profit</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Net Profit</div>
+						<StatIcon icon={netProfit >= 0 ? '📈' : '📉'} tone={netProfit >= 0 ? 'success' : 'danger'} />
+					</div>
 					<div className="value" style={{ fontSize: '1.15rem', color: netProfit >= 0 ? 'var(--success)' : 'var(--danger)' }}>
 						{fmt(netProfit)}
 					</div>
@@ -361,7 +416,10 @@ export default function Dashboard() {
 				</div>
 
 				<div className="stat-card amber">
-					<div className="label">Current Stock</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Current Stock</div>
+						<StatIcon icon="📦" tone="amber" />
+					</div>
 					<div className="value">{totalStock.toLocaleString()}</div>
 					<div className="sub">crates · {inventory.length} sizes</div>
 					{hasLowStock && (
@@ -372,20 +430,29 @@ export default function Dashboard() {
 				</div>
 
 				<div className="stat-card amber">
-					<div className="label">Customers</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Customers</div>
+						<StatIcon icon="👥" tone="amber" />
+					</div>
 					<div className="value">{custArr.length || Object.keys(custMap).length}</div>
 					<div className="sub">active accounts</div>
 				</div>
 
 				<div className="stat-card brown">
-					<div className="label">Purchase Cost</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Purchase Cost</div>
+						<StatIcon icon="🚚" tone="brown" />
+					</div>
 					<div className="value" style={{ fontSize: '1.15rem' }}>{fmt(totalPurchCost)}</div>
 					<div className="sub">{purchArr.length} orders · {uniqueFarms} farm{uniqueFarms !== 1 ? 's' : ''}</div>
 					<div style={{ marginTop: 6 }}><Trend cur={tPurchCost} prev={lPurchCost} invert /></div>
 				</div>
 
 				<div className="stat-card brown">
-					<div className="label">Total Expenses</div>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+						<div className="label" style={{ marginBottom: 0 }}>Total Expenses</div>
+						<StatIcon icon="💸" tone="brown" />
+					</div>
 					<div className="value" style={{ fontSize: '1.15rem' }}>{fmt(totalExpenses)}</div>
 					<div className="sub">{expensesArr.length} records · {sortedExpCats.length} categories</div>
 					<div style={{ marginTop: 6 }}><Trend cur={tExpAmt} prev={lExpAmt} invert /></div>
@@ -397,7 +464,7 @@ export default function Dashboard() {
 			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
 
 				<div className="card">
-					<CardHead icon="📊" title="Profitability Overview" />
+					<CardHead icon="📊" title="Profitability Overview" tone="success" />
 					{[
 						{ label: 'Gross Revenue',    value: totalRevenue,   color: 'var(--success)',  bold: false },
 						{ label: 'Cost of Purchases (COGS)', value: -totalPurchCost, color: 'var(--danger)', bold: false },
@@ -407,7 +474,14 @@ export default function Dashboard() {
 					].map(({ label, value, color, bold, divBefore }) => (
 						<div key={label}>
 							{divBefore && <Divider />}
-							<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', fontWeight: bold ? 700 : 400, fontSize: bold ? '0.9rem' : '0.85rem' }}>
+							<div style={{
+								display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+								padding: bold ? '8px 10px' : '6px 0',
+								margin: bold ? '2px 0' : 0,
+								borderRadius: bold ? 8 : 0,
+								background: bold ? (value >= 0 ? 'var(--success-bg)' : 'var(--danger-bg)') : 'transparent',
+								fontWeight: bold ? 700 : 400, fontSize: bold ? '0.9rem' : '0.85rem',
+							}}>
 								<span style={{ color: bold ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{label}</span>
 								<span style={{ color, fontVariantNumeric: 'tabular-nums' }}>
 									{value < 0 ? `(${fmt(Math.abs(value))})` : fmt(value)}
@@ -433,7 +507,7 @@ export default function Dashboard() {
 				</div>
 
 				<div className="card">
-					<CardHead icon="💳" title="Payment Methods" />
+					<CardHead icon="💳" title="Payment Methods" tone="info" />
 					{sortedMethods.length === 0 ? (
 						<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No payments recorded.</p>
 					) : (
@@ -443,13 +517,13 @@ export default function Dashboard() {
 									<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: '0.84rem' }}>
 										<span style={{ fontWeight: 500 }}>{methodLabel(method)}</span>
 										<div>
-											<span style={{ fontWeight: 600, color: 'var(--success)' }}>{fmt(amount)}</span>
+											<span style={{ fontWeight: 600, color: methodColor(method) }}>{fmt(amount)}</span>
 											<span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: 6 }}>
 												{((amount / totalMethodSum) * 100).toFixed(0)}%
 											</span>
 										</div>
 									</div>
-									<Bar pct={(amount / maxMethod) * 100} color="var(--success)" />
+									<Bar pct={(amount / maxMethod) * 100} color={methodColor(method)} />
 								</div>
 							))}
 							<Divider />
@@ -461,7 +535,10 @@ export default function Dashboard() {
 					)}
 
 					{/* Collection rate bar */}
-					<div style={{ marginTop: 16, padding: 14, background: 'var(--warm-white)', borderRadius: 8 }}>
+					<div style={{
+						marginTop: 16, padding: 14, borderRadius: 8,
+						background: collectionRate >= 80 ? 'var(--success-bg)' : collectionRate >= 50 ? 'var(--warning-bg)' : 'var(--danger-bg)',
+					}}>
 						<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: '0.84rem' }}>
 							<span style={{ fontWeight: 600 }}>Collection Rate</span>
 							<span style={{ fontWeight: 700, color: collectionRate >= 80 ? 'var(--success)' : collectionRate >= 50 ? 'var(--warning)' : 'var(--danger)' }}>
@@ -484,7 +561,7 @@ export default function Dashboard() {
 
 			{/* ── Row 3 · Monthly Snapshot ─────────────────────────────────── */}
 			<div className="card">
-				<CardHead icon="📅" title="This Month vs Last Month" />
+				<CardHead icon="📅" title="This Month vs Last Month" tone="amber" />
 				<div style={{ overflowX: 'auto' }}>
 					<table style={{ width: '100%', fontSize: '0.84rem', borderCollapse: 'collapse', minWidth: 480 }}>
 						<thead>
@@ -522,7 +599,7 @@ export default function Dashboard() {
 			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
 
 				<div className="card">
-					<CardHead icon="📦" title="Current Inventory" />
+					<CardHead icon="📦" title="Current Inventory" tone="amber" />
 					<div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 						{inventory.length === 0 ? (
 							<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No inventory data.</p>
@@ -560,7 +637,7 @@ export default function Dashboard() {
 				</div>
 
 				<div className="card">
-					<CardHead icon="🛒" title="Sales by Egg Size" />
+					<CardHead icon="🛒" title="Sales by Egg Size" tone="success" />
 					{Object.keys(salesBySize).length === 0 ? (
 						<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No sales data.</p>
 					) : (
@@ -607,7 +684,7 @@ export default function Dashboard() {
 			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
 
 				<div className="card">
-					<CardHead icon="🏆" title="Top Customers by Revenue" />
+					<CardHead icon="🏆" title="Top Customers by Revenue" tone="warning" />
 					{topCustomers.length === 0 ? (
 						<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No customer data.</p>
 					) : (
@@ -647,7 +724,7 @@ export default function Dashboard() {
 				</div>
 
 				<div className="card">
-					<CardHead icon="⚠️" title="Outstanding Balances" />
+					<CardHead icon="⚠️" title="Outstanding Balances" tone="danger" />
 					{topDebtors.length === 0 ? (
 						<div className="empty" style={{ padding: '20px 0' }}>
 							<div className="emoji">🎉</div>
@@ -700,7 +777,7 @@ export default function Dashboard() {
 
 					{/* Grouped bar: Sales vs Payments vs Balance per customer */}
 					<div className="card" style={{ gridColumn: '1 / -1' }}>
-						<CardHead icon="👥" title="Customer Sales vs Payments vs Outstanding Balance" />
+						<CardHead icon="👥" title="Customer Sales vs Payments vs Outstanding Balance" tone="info" />
 						<ResponsiveContainer width="100%" height={300}>
 							<BarChart
 								data={customerChartData}
@@ -746,7 +823,7 @@ export default function Dashboard() {
 			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
 
 				<div className="card">
-					<CardHead icon="💸" title="Expenses by Category" />
+					<CardHead icon="💸" title="Expenses by Category" tone="brown" />
 					{sortedExpCats.length === 0 ? (
 						<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No expenses recorded.</p>
 					) : (
@@ -775,7 +852,7 @@ export default function Dashboard() {
 				</div>
 
 				<div className="card">
-					<CardHead icon="🚚" title="Purchases by Egg Size" />
+					<CardHead icon="🚚" title="Purchases by Egg Size" tone="brown" />
 					{Object.keys(purchBySize).length === 0 ? (
 						<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No purchase data.</p>
 					) : (
@@ -819,7 +896,7 @@ export default function Dashboard() {
 
 				{[
 					{
-						icon: '🛒', title: 'Recent Sales', items: recentSales,
+						icon: '🛒', title: 'Recent Sales', items: recentSales, tone: 'success',
 						row: (s) => ({
 							top: s.customerName,
 							sub: `${fmtDate(s.saleDate)} · ${s.quantity} ${s.eggSize} crates`,
@@ -828,7 +905,7 @@ export default function Dashboard() {
 						}),
 					},
 					{
-						icon: '💳', title: 'Recent Payments', items: recentPayments,
+						icon: '💳', title: 'Recent Payments', items: recentPayments, tone: 'info',
 						row: (p) => ({
 							top: p.customerName,
 							sub: `${fmtDate(p.paymentDate)} · ${methodLabel(p.method)}`,
@@ -837,7 +914,7 @@ export default function Dashboard() {
 						}),
 					},
 					{
-						icon: '🚚', title: 'Recent Purchases', items: recentPurchases,
+						icon: '🚚', title: 'Recent Purchases', items: recentPurchases, tone: 'brown',
 						row: (p) => ({
 							top: p.farmName || 'Farm Purchase',
 							sub: `${fmtDate(p.purchaseDate)} · ${p.quantity} ${p.eggSize} crates`,
@@ -845,9 +922,9 @@ export default function Dashboard() {
 							color: 'var(--text-primary)',
 						}),
 					},
-				].map(({ icon, title, items, row }) => (
+				].map(({ icon, title, items, row, tone }) => (
 					<div key={title} className="card">
-						<CardHead icon={icon} title={title} />
+						<CardHead icon={icon} title={title} tone={tone} />
 						{items.length === 0 ? (
 							<p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No recent records.</p>
 						) : (
